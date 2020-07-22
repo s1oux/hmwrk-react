@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
-import { getMessages } from '../../services/messageService';
+import {
+  getMessages,
+  getMessagesFromMock,
+} from '../../services/messageService';
 import Spinner from '../../components/Spinner/spinner';
 import Header from '../../components/Header/header';
 import ChatHeader from '../../components/ChatHeader/chatHeader';
@@ -35,15 +38,12 @@ const Chat = () => {
   const [messageOnEdit, setMessageOnEdit] = useState({});
 
   useEffect(() => {
-    getMessages()
-      .then((fetchedData) => {
-        const processedMessages = processMessagesInitData(fetchedData);
-        setIsLoading(false);
-        setMessages(processedMessages);
-        setUser(selectRandomUser(processedMessages));
-        setLastSentMessage(getLastMessageDate(processedMessages));
-      })
-      .catch((err) => console.log(err));
+    const fetchedData = getMessagesFromMock();
+    const processedMessages = processMessagesInitData(fetchedData);
+    setIsLoading(false);
+    setMessages(processedMessages);
+    setUser(selectRandomUser(processedMessages));
+    setLastSentMessage(getLastMessageDate(processedMessages));
   }, []);
 
   const addMessage = (messageText) => {
@@ -67,7 +67,11 @@ const Chat = () => {
     ]);
   };
 
-  const removeMessage = (id) => setMessages([...deleteMessage(messages)(id)]);
+  const removeMessage = (id) => {
+    const updatedMessages = deleteMessage(messages)(id);
+    setMessages([...updatedMessages]);
+    setLastSentMessage(getLastMessageDate(updatedMessages));
+  };
 
   const toggleModal = (message = {}) => {
     setMessageOnEdit(message);
