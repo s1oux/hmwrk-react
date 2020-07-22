@@ -35,13 +35,15 @@ const Chat = () => {
   const [messageOnEdit, setMessageOnEdit] = useState({});
 
   useEffect(() => {
-    getMessages().then((fetchedData) => {
-      const processedMessages = processMessagesInitData(fetchedData);
-      setIsLoading(false);
-      setMessages(processedMessages);
-      setUser(selectRandomUser(processedMessages));
-      setLastSentMessage(getLastMessageDate(processedMessages));
-    });
+    getMessages()
+      .then((fetchedData) => {
+        const processedMessages = processMessagesInitData(fetchedData);
+        setIsLoading(false);
+        setMessages(processedMessages);
+        setUser(selectRandomUser(processedMessages));
+        setLastSentMessage(getLastMessageDate(processedMessages));
+      })
+      .catch((err) => console.log(err));
   }, []);
 
   const addMessage = (messageText) => {
